@@ -1,135 +1,244 @@
-#include <iostream>
-using namespace std;
 
-const int MAX_CANDIDATES = 100;
-const int MAX_USERS = 100;
-
-string candidateNames[MAX_CANDIDATES];
-int candidateVotes[MAX_CANDIDATES];
-string votedUsers[MAX_USERS];
-
-int candidateCount = 0;
-int voterCount = 0;
-
-// Check if user has already voted
-bool hasVoted(string username) {
-    for (int i = 0; i < voterCount; i++) {
-        if (votedUsers[i] == username) return true;
-    }
-    return false;
-}
-
-// Mark user as voted
-void markVoted(string username) {
-    votedUsers[voterCount++] = username;
-}
-
-// Admin Panel
-void adminPanel() {
-    int choice;
-    while (true) {
-        cout << "\n--- Admin Panel ---\n";
-        cout << "1. Add Candidate\n";
-        cout << "2. View Candidates\n";
-        cout << "3. Show Results\n";
-        cout << "4. Exit Admin Panel\n";
-        cout << "Enter choice: ";
-        cin >> choice;
-        cin.ignore();
-
-        if (choice == 1) {
-            if (candidateCount >= MAX_CANDIDATES) {
-                cout << "Maximum number of candidates reached.\n";
-                continue;
-            }
-            cout << "Enter candidate name: ";
-            getline(cin, candidateNames[candidateCount]);
-            candidateVotes[candidateCount] = 0;
-            candidateCount++;
-            cout << "Candidate added successfully.\n";
-        }
-        else if (choice == 2) {
-            cout << "\n--- Candidate List ---\n";
-            for (int i = 0; i < candidateCount; i++) {
-                cout << i + 1 << ". " << candidateNames[i] << endl;
-            }
-        }
-        else if (choice == 3) {
-            cout << "\n--- Voting Results ---\n";
-            for (int i = 0; i < candidateCount; i++) {
-                cout << candidateNames[i] << ": " << candidateVotes[i] << " vote(s)\n";
-            }
-        }
-        else if (choice == 4) {
-            break;
-        }
-        else {
-            cout << "Invalid choice. Try again.\n";
-        }
-    }
-}
-
-// Voter Panel
-void voterPanel() {
-    string username;
-    cout << "Enter your name: ";
-    cin.ignore();
-    getline(cin, username);
-
-    if (hasVoted(username)) {
-        cout << "You have already voted!\n";
-        return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Creative Voting System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-    if (candidateCount == 0) {
-        cout << "No candidates available for voting.\n";
-        return;
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
     }
 
-    cout << "\n--- Candidates ---\n";
-    for (int i = 0; i < candidateCount; i++) {
-        cout << i + 1 << ". " << candidateNames[i] << endl;
+    header {
+      width: 100%;
+      background-color: #fff;
+      padding: 15px 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-    int vote;
-    cout << "Enter the number of the candidate you want to vote for: ";
-    cin >> vote;
-
-    if (vote < 1 || vote > candidateCount) {
-        cout << "Invalid choice.\n";
-        return;
+    header h1 {
+      font-size: 24px;
+      color: #ff6f61;
     }
 
-    candidateVotes[vote - 1]++;
-    markVoted(username);
-    cout << "Thank you for voting!\n";
-}
-
-// Main Menu
-int main() {
-    int choice;
-    while (true) {
-        cout << "\n===== Online Voting System =====\n";
-        cout << "1. Admin Panel\n";
-        cout << "2. Voter Panel\n";
-        cout << "3. Exit\n";
-        cout << "Enter your choice: ";
-        cin >> choice;
-
-        if (choice == 1) {
-            adminPanel();
-        }
-        else if (choice == 2) {
-            voterPanel();
-        }
-        else if (choice == 3) {
-            cout << "Thank you for using the voting system!\n";
-            break;
-        }
-        else {
-            cout << "Invalid choice. Try again.\n";
-        }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.75);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 1.2s ease;
     }
 
-    return 0;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    nav button {
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    nav button:hover {
+      background-color: #e55b4f;
+    }
+
+    .tab {
+      display: none;
+    }
+
+    .tab.active {
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 12px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button.action {
+      background-color: #6a11cb;
+      background-image: linear-gradient(315deg, #6a11cb 0%, #2575fc 74%);
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      transition: transform 0.2s ease;
+    }
+
+    button.action:hover {
+      transform: scale(1.03);
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      padding: 8px;
+      background: #fff;
+      margin: 6px 0;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .message {
+      font-weight: 600;
+      color: #28a745;
+      margin-top: 10px;
+    }
+
+    @media screen and (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      header h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎯 Online Voting System</h1>
+</header>
+
+<div class="container">
+  <nav>
+    <button onclick="switchTab('admin')">🛠 Admin Panel</button>
+    <button onclick="switchTab('voter')">🗳 Voter Panel</button>
+  </nav>
+
+  <div id="admin" class="tab active">
+    <h2>Admin Panel</h2>
+    <input type="text" id="adminCandidate" placeholder="Enter candidate name">
+    <button class="action" onclick="addCandidate()">Add Candidate</button>
+    <h3>Candidate List</h3>
+    <ul id="adminList"></ul>
+    <h3>Voting Results</h3>
+    <ul id="results"></ul>
+  </div>
+
+  <div id="voter" class="tab">
+    <h2>Voter Panel</h2>
+    <input type="text" id="voterName" placeholder="Enter your name">
+    <select id="candidateSelect">
+      <option value="">Select a candidate</option>
+    </select>
+    <button class="action" onclick="castVote()">Vote</button>
+    <p id="voteMsg" class="message"></p>
+  </div>
+</div>
+
+<script>
+  let candidates = [];
+  let votes = {};
+  let voters = new Set();
+
+  function switchTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    updateUI();
+  }
+
+  function addCandidate() {
+    const name = document.getElementById('adminCandidate').value.trim();
+    if (!name || candidates.includes(name)) return alert("Enter a unique candidate name.");
+    candidates.push(name);
+    votes[name] = 0;
+    document.getElementById('adminCandidate').value = "";
+    updateUI();
+  }
+
+  function castVote() {
+    const name = document.getElementById('voterName').value.trim();
+    const selected = document.getElementById('candidateSelect').value;
+    const msg = document.getElementById('voteMsg');
+
+    if (!name || !selected) return msg.innerText = "Please fill all fields.";
+    if (voters.has(name)) return msg.innerText = "⚠️ You already voted!";
+
+    voters.add(name);
+    votes[selected]++;
+    msg.innerText = "✅ Thanks for voting!";
+    updateUI();
+  }
+
+  function updateUI() {
+    const adminList = document.getElementById('adminList');
+    const results = document.getElementById('results');
+    const dropdown = document.getElementById('candidateSelect');
+
+    adminList.innerHTML = "";
+    results.innerHTML = "";
+    dropdown.innerHTML = '<option value="">Select a candidate</option>';
+
+    candidates.forEach(c => {
+      const li1 = document.createElement('li');
+      li1.innerText = c;
+      adminList.appendChild(li1);
+
+      const li2 = document.createElement('li');
+      li2.innerText = `${c} - ${votes[c]} vote(s)`;
+      results.appendChild(li2);
+
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.text = c;
+      dropdown.appendChild(opt);
+    });
+  }
+</script>
+
+</body>
+</html>
